@@ -744,6 +744,11 @@ Runner.prototype = {
 
     // Reset the time clock.
     this.time = getTimeStamp();
+    
+    //Game Over Event
+    var gameEnded = new CustomEvent("gameEnded", {"detail": "Game Over"});
+
+    document.dispatchEvent(gameEnded);
   },
 
   stop: function() {
