@@ -61,6 +61,9 @@ export default function Runner(outerContainerId, opt_config) {
   this.images = {};
   this.imagesLoaded = 0;
 
+  // Start panel
+  this.startPanel = new StartGamePanel(this.outerContainerEl);
+
   this.loadImages();
 }
 window['Runner'] = Runner;
@@ -335,6 +338,9 @@ Runner.prototype = {
     this.tRex = new Trex(this.canvas, this.spriteDef.TREX);
 
     this.outerContainerEl.appendChild(this.containerEl);
+
+    // Draw start game panel
+    this.startPanel.draw();
 
     if (IS_MOBILE) {
       this.createTouchController();
@@ -624,6 +630,7 @@ Runner.prototype = {
       if (!this.playing) {
         this.loadSounds();
         this.playing = true;
+        this.startPanel.remove();
         this.update();
         if (window.errorPageController) {
           errorPageController.trackEasterEgg();
@@ -944,6 +951,36 @@ function getTimeStamp() {
 
 //******************************************************************************
 
+/**
+ * Start game panel
+ * @param {!HTMLCanvasElement} htmlElement 
+ */
+function StartGamePanel(htmlElement) {
+  this.parent = htmlElement;
+}
+
+StartGamePanel.prototype = {
+  draw: function() {
+    var panel = document.createElement('p');
+    panel.innerText = 'Press Space to Start';
+    panel.classList.add('start-panel');
+    this.parent.appendChild(panel);
+
+    this.flash = window.setInterval(function() {
+      panel.classList.toggle('hidden');
+    }, 600);
+    
+    this.self = panel;
+  },
+
+  remove: function() {
+    this.parent.removeChild(this.self);
+    window.clearInterval(this.flash);
+  }
+}
+
+
+//******************************************************************************
 
 /**
  * Game over panel.
