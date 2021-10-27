@@ -1,8 +1,6 @@
 // Follow the instructions here: https://learn-launchdarkly.netlify.app/
 import config from './config.js';
 import Runner from './runner.js';
-// Import the code to enable the Dark Mode button
-import * as DarkMode from './dark-mode.js';
 
 // Press Run to start the game!
 
@@ -32,10 +30,3 @@ function drawGame() {
 
 // Register an event handler that calls `drawGame` once the client is ready
 ldclient.on('ready', drawGame);
-
-// Register an event handler that is triggered every time the `dark-mode` flag changes.
-//
-ldclient.on('change:dark-mode', (currentValue, previousValue) => {
-  // currentValue will be true or false based on our flag rules
-  DarkMode.setButtonVisible(currentValue);
-});
