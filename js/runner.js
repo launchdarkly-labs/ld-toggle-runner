@@ -225,6 +225,18 @@ Runner.events = {
 
 Runner.prototype = {
   /**
+   * Update the game's graphics after flag switch.
+   */
+   updateGraphics: function() {
+    Runner.instance_.setSprites();
+    if (!Runner.instance_.playing) {
+      Runner.instance_.stopListening();
+      Runner.instance_.containerEl.remove();
+      Runner.instance_.init();
+    }
+  },
+  
+  /**
    * Setting individual settings for debugging.
    * @param {string} setting
    * @param {*} value
