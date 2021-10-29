@@ -2,7 +2,7 @@ import config from './config.js';
 import Runner from './runner.js';
 
 // Copy the Client ID for your environment from https://app.launchdarkly.com/settings/projects
-const LD_CLIENT_ID = '<YOUR CLIENT ID HERE>';
+const LD_CLIENT_ID = '616f14f35778ca2411aee9b7';
 
 // The user object for flag evaluation (this is explained in lesson 3)
 let lduser = {"key": "user123"};
@@ -50,3 +50,16 @@ ldclient.on('change:space-mode', function (currentValue, previousValue) {
       heading.innerText = "T-Rex Runner";
   }
 });
+
+// This `updateUser()` function ask the user for a new key,
+// then changes the user object.
+function updateUser() {
+  let newKey = window.prompt("Enter a new user key", lduser.key);
+  if (newKey !== null && newKey !== "") {
+    lduser.key = newKey;
+    ldclient.identify(lduser, null);
+  }
+}
+
+// Call the updateUser() functon when the user clicks on the header
+document.getElementById("heading").addEventListener("click", updateUser);
