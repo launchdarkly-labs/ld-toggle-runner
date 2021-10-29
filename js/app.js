@@ -49,6 +49,4 @@ ldclient.on('change:space-mode', function (currentValue, previousValue) {
       // Change the game name heading
       heading.innerText = "T-Rex Runner";
   }
-  // Both changes require the game to update
-  updateGraphics();
 });
