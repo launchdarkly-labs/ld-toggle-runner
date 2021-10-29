@@ -226,6 +226,7 @@ Runner.events = {
 Runner.prototype = {
   /**
    * Update the game's graphics after flag switch.
+   * Created for LD Toggle Runner
    */
    updateGraphics: function() {
     Runner.instance_.setSprites();
@@ -235,7 +236,7 @@ Runner.prototype = {
       Runner.instance_.init();
     }
   },
-  
+
   /**
    * Setting individual settings for debugging.
    * @param {string} setting
