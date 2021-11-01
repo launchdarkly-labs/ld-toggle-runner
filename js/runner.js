@@ -646,9 +646,9 @@ Runner.prototype = {
       e.preventDefault();
     }
 
-    // if (Runner.keycodes.JUMP[e.keyCode]) {
-    //   this.startPanel.remove();
-    // }
+    if (Runner.keycodes.JUMP[e.keyCode]) {
+      this.startPanel.remove();
+    }
 
     if (!this.crashed && (Runner.keycodes.JUMP[e.keyCode] ||
          e.type == Runner.events.TOUCHSTART)) {
