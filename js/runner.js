@@ -9,7 +9,7 @@
  * @constructor
  * @export
  */
-export default function Runner(outerContainerId, opt_config) {
+ export default function Runner(outerContainerId, opt_config) {
   // Singleton
   if (Runner.instance_) {
     return Runner.instance_;
@@ -229,11 +229,9 @@ Runner.prototype = {
    * Created for LD Toggle Runner
    */
    updateGraphics: function() {
-    Runner.instance_.setSprites();
-    if (!Runner.instance_.playing) {
-      Runner.instance_.stopListening();
-      Runner.instance_.containerEl.remove();
-      Runner.instance_.init();
+    if (!this.playing) {
+      this.stopListening();
+      this.init();
     }
   },
 
@@ -324,6 +322,7 @@ Runner.prototype = {
    * Game initialiser.
    */
   init: function() {
+    this.startPanel.remove();
     this.adjustDimensions();
     this.setSpeed();
 
@@ -346,11 +345,20 @@ Runner.prototype = {
     // Distance meter
     this.distanceMeter = new DistanceMeter(this.canvas,
           this.spriteDef.TEXT_SPRITE, this.dimensions.WIDTH);
+    
+    if (this.highestScore) {
+      this.distanceMeter.setHighScore(this.highestScore);
+    }
 
     // Draw t-rex
     this.tRex = new Trex(this.canvas, this.spriteDef.TREX);
 
-    this.outerContainerEl.appendChild(this.containerEl);
+    // Added for LD Toggle Runner - only append the first time, otherwise replace
+    if (this.outerContainerEl.hasChildNodes()) {
+      this.outerContainerEl.replaceChild(this.containerEl, this.outerContainerEl.firstChild);
+    } else {
+      this.outerContainerEl.appendChild(this.containerEl);
+    }
 
     // Draw start game panel
     this.startPanel.draw();
@@ -638,12 +646,15 @@ Runner.prototype = {
       e.preventDefault();
     }
 
+    // if (Runner.keycodes.JUMP[e.keyCode]) {
+    //   this.startPanel.remove();
+    // }
+
     if (!this.crashed && (Runner.keycodes.JUMP[e.keyCode] ||
          e.type == Runner.events.TOUCHSTART)) {
       if (!this.playing) {
         this.loadSounds();
         this.playing = true;
-        this.startPanel.remove();
         this.update();
         if (window.errorPageController) {
           errorPageController.trackEasterEgg();
@@ -653,6 +664,8 @@ Runner.prototype = {
       if (!this.tRex.jumping && !this.tRex.ducking) {
         this.playSound(this.soundFx.BUTTON_PRESS);
         this.tRex.startJump(this.currentSpeed);
+        // Added for LD Toggle Runner
+        this.startPanel.remove();
       }
     }
 
@@ -970,15 +983,19 @@ function getTimeStamp() {
  */
 function StartGamePanel(htmlElement) {
   this.parent = htmlElement;
+  this.hasBeenDrawn = false;
 }
 
 StartGamePanel.prototype = {
   draw: function() {
-    var panel = document.createElement('p');
-    panel.innerText = 'Press Space to Start';
-    panel.classList.add('start-panel');
-    this.parent.appendChild(panel);
-
+    if (!this.hasBeenDrawn) {
+      var panel = document.createElement('p');
+      panel.innerText = 'Press Space to Start';
+      panel.classList.add('start-panel');
+      this.parent.appendChild(panel);
+    }
+    this.hasBeenDrawn = true;
+      
     this.flash = window.setInterval(function() {
       panel.classList.toggle('hidden');
     }, 600);
@@ -987,8 +1004,11 @@ StartGamePanel.prototype = {
   },
 
   remove: function() {
-    this.parent.removeChild(this.self);
-    window.clearInterval(this.flash);
+    if (this.hasBeenDrawn) {
+      this.parent.removeChild(this.self);
+      window.clearInterval(this.flash);
+    }
+    this.hasBeenDrawn = false;
   }
 }
 
